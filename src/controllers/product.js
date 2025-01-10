@@ -208,3 +208,21 @@ exports.searchFilters = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+
+exports.createImages = async(req,res) =>{
+  try {
+    res.send('Hello CreateImages')
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message : "Server Error"})
+  }
+}
+exports.removeImage = async(req,res) =>{
+  try {
+    res.send('Hello Remove Image')
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message : "Server Error"})
+  }
+}

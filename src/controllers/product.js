@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const cloudinary = require("cloudinary").v2;
 
 exports.create = async (req, res) => {
   try {
@@ -209,20 +210,34 @@ exports.searchFilters = async (req, res) => {
   }
 };
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUNDINARY_API_KEY,
+  api_secret: process.env.CLOUNDINARY_API_SECRET, // Click 'View API Keys' above to copy your API secret
+});
 
-exports.createImages = async(req,res) =>{
+exports.createImages = async (req, res) => {
   try {
-    res.send('Hello CreateImages')
+    const result = await cloudinary.uploader.upload(req.body.image, {
+      public_id: `pubordee-${Date.now()}`,
+      resource_type: "auto",
+      folder: "Ecom",
+    });
+    res.send(result);
   } catch (error) {
-    console.log(error)
-    res.status(500).json({message : "Server Error"})
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
   }
-}
-exports.removeImage = async(req,res) =>{
+};
+exports.removeImage = async (req, res) => {
   try {
-    res.send('Hello Remove Image')
+    const { public_id } = req.body;
+
+    cloudinary.uploader.destroy(public_id, (result) => {
+      res.status(200).json({message : "Remove Image Success"});
+    });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({message : "Server Error"})
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
   }
-}
+};

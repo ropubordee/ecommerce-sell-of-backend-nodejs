@@ -45,14 +45,18 @@ model Product {
 }
 
 model Order {
-  id          Int              @id @default(autoincrement())
-  products    ProductOnOrder[]
-  cartTotal   Float
-  orderStatus String           @default("Not Process")
-  orderedBy   User             @relation(fields: [orderedById], references: [id], onDelete: Cascade)
-  orderedById Int
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  id             Int              @id @default(autoincrement())
+  products       ProductOnOrder[]
+  cartTotal      Float
+  orderStatus    String           @default("Not Process")
+  orderedBy      User             @relation(fields: [orderedById], references: [id], onDelete: Cascade)
+  orderedById    Int
+  stripePaymenId String
+  amount         Int
+  status         String
+  currentcy      String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model ProductOnOrder {

@@ -9,6 +9,8 @@ exports.listUsers = async (req, res) => {
         role: true,
         enabled: true,
         address: true,
+        createdAt : true,
+        updatedAt : true
       },
     });
     res.json(users);
@@ -57,6 +59,21 @@ exports.userCart = async (req, res) => {
     const user = await prisma.user.findFirst({
       where: { id: Number(req.user.id) },
     });
+
+      for (const item of cart) {
+      console.log(item);
+      const product = await prisma.product.findUnique({
+        where: { id: item.id },
+        select: { quantity: true, title: true },
+      });
+
+      if (!product || item.count > product.quantity) {
+        return res.status(400).json({
+          ok: false,
+          message: `ขออภัย : สินค้า ${product?.title || "product"} หมด `,
+        });
+      }
+    }
 
     await prisma.productOnCart.deleteMany({
       where: {
@@ -193,20 +210,7 @@ exports.saveOrder = async (req, res) => {
       return res.status(400).json({ ok: false, message: "Cart is Empty" });
     }
 
-    // for (const item of userCart.products) {
-    //   console.log(item);
-    //   const product = await prisma.product.findUnique({
-    //     where: { id: item.productId },
-    //     select: { quantity: true, title: true },
-    //   });
-
-    //   if (!product || item.count > product.quantity) {
-    //     return res.status(400).json({
-    //       ok: false,
-    //       message: `ขออภัย : สินค้า ${product?.title || "product"} หมด `,
-    //     });
-    //   }
-    // }
+  
 
     const amountTHB = Number(amount) / 100
 

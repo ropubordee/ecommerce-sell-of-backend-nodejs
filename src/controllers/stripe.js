@@ -5,14 +5,13 @@ const stripe = require("stripe")(
 
 exports.payment = async (req, res) => {
   try {
-  
     const cart = await prisma.cart.findFirst({
-      where : {
-        orderedById : req.user.id
-      }
-    })
-  
-    const amountTHB = cart.cartTotal * 100
+      where: {
+        orderedById: req.user.id,
+      },
+    });
+
+    const amountTHB = cart.cartTotal * 100;
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountTHB,
@@ -25,6 +24,19 @@ exports.payment = async (req, res) => {
     res.send({
       clientSecret: paymentIntent.client_secret,
     });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+exports.listPayment = async (req, res) => {
+  try {
+    const payments = await stripe.paymentIntents.list({
+      limit: 10, 
+    });
+
+    // console.log("Payments:", payments.data);
+    res.send ({datalistpayment : payments})
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });

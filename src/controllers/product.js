@@ -149,11 +149,11 @@ exports.remove = async (req, res) => {
 };
 exports.listby = async (req, res) => {
   try {
-    const { sort, order, limit } = req.body;
+    const { sort, orderBy, limit } = req.body;
 
     const products = await prisma.product.findMany({
       take: limit,
-      orderBy: { [sort]: order },
+      orderBy: { [sort]: orderBy },
       include: {
         category: true,
         images: true
